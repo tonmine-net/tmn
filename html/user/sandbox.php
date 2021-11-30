@@ -46,9 +46,11 @@ function list_files($user, $err_msg) {
     echo "
         <form action=sandbox.php method=post ENCTYPE=\"multipart/form-data\">
         <input type=hidden name=action value=upload_file>
-        Upload a file to your sandbox:
-        <p><input size=80 type=file name=\"new_file[]\" multiple=\"multiple\">
-        <p> <input class=\"btn btn-default\" type=submit value=Upload>
+        Upload files to your sandbox
+        (use shift-click to select multiple files):
+        <p><p>
+        <input size=80 type=file name=\"new_file[]\" multiple>
+        <p> <input class=\"btn btn-success\" type=submit value=Upload>
         </form>
         <hr>
     ";
@@ -74,7 +76,7 @@ function list_files($user, $err_msg) {
                 table_row($f, "Can't parse link file", "", "<a href=sandbox.php?action=delete_files&name=$f>delete</a>");
                 continue;
             }
-            $p = sandbox_physical_path($user, $md5);
+            $p = sandbox_physical_path_md5($user, $md5);
             if (!is_file($p)) {
                 table_row($f, "Physical file not found", "", "");
                 continue;
@@ -123,7 +125,7 @@ function upload_file($user) {
         } else {
             // move file to download dir
             //
-            $phys_path = sandbox_physical_path($user, $md5);
+            $phys_path = sandbox_physical_path_md5($user, $md5);
             rename($tmp_name, $phys_path);
 
             // write link file
@@ -144,7 +146,7 @@ function delete_file($user) {
     if ($error) {
         error_page("can't parse link file");
     }
-    $p = sandbox_physical_path($user, $md5);
+    $p = sandbox_physical_path_md5($user, $md5);
     if (!is_file($p)) {
         error_page("no such physical file");
     }
@@ -167,7 +169,7 @@ function download_file($user) {
     if ($err) {
         error_page("can't parse link file");
     }
-    $p = sandbox_physical_path($user, $md5);
+    $p = sandbox_physical_path_md5($user, $md5);
     if (!is_file($p)) {
         error_page("$p does not exist!");
     }
@@ -178,7 +180,7 @@ function view_file($user) {
     $dir = sandbox_dir($user);
     list($error, $size, $md5) = sandbox_parse_link_file("$dir/$name");
     if ($error) error_page("no such link file");
-    $p = sandbox_physical_path($user, $md5);
+    $p = sandbox_physical_path_md5($user, $md5);
     if (!is_file($p)) error_page("no such physical file");
     echo "<pre>\n";
     readfile($p);

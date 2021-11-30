@@ -1,7 +1,7 @@
 <?php
 // This file is part of BOINC.
 // http://boinc.berkeley.edu
-// Copyright (C) 2011 University of California
+// Copyright (C) 2021 University of California
 //
 // BOINC is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License
@@ -25,7 +25,6 @@ require_once("../inc/dir_hier.inc");
 // Return path of sandbox directory for the given user.
 // Create dir if not present.
 //
-if (!function_exists("sandbox_dir")){
 function sandbox_dir($user) {
     $dir = parse_config(get_config(), "<sandbox_dir>");
     if (!$dir) { $dir = "../../sandbox/"; }
@@ -37,7 +36,6 @@ function sandbox_dir($user) {
         mkdir($d);
     }
     return $d;
-}
 }
 
 function sandbox_write_link_file($path, $size, $md5) {
@@ -69,7 +67,7 @@ function sandbox_lf_exist($user, $md5) {
 // parse a link file and return (error, size, md5)
 //
 function sandbox_parse_link_file($path) {
-    if (!file_exists($path)) { return array(true, null, null); }
+    if (!file_exists($path)) return array(true, null, null);
     $x = file_get_contents($path);
     $n = sscanf($x, "%s %d %s", $s, $size, $md5);
     if ($n != 3) return array(true, null, null);
@@ -86,19 +84,28 @@ function sandbox_file_name($user, $md5) {
     return $f;
 }
 
-// return the path of the file in the download directory
+// return the path of the file in the download directory given its MD5
 //
-if (!function_exists('sandbox_physical_path')) {
-function sandbox_physical_path($user, $md5) {
+function sandbox_physical_path_md5($user, $md5) {
     global $fanout;
     $f = sandbox_file_name($user, $md5);
-    return dir_hier_path($f, parse_config(get_config(), "<download_dir>"), $fanout);
+    return dir_hier_path(
+        $f, parse_config(get_config(), "<download_dir>"), $fanout
+    );
 }
+
+// return the physical path given sandbox name
+//
+function sandbox_physical_path_name($user, $name) {
+    $sb_dir = sandbox_dir($user);
+    $sb_path = "$sb_dir/$name";
+    list($err, $size, $md5) = sandbox_parse_link_file($sb_path);
+    if ($err) return null;
+    return sandbox_physical_path_md5($user, $md5);
 }
 
 // return list of files in sandbox
 //
-if (!function_exists('sandbox_file_names')) {
 function sandbox_file_names($user) {
     $d = opendir(sandbox_dir($user));
     $names = array();
@@ -110,12 +117,12 @@ function sandbox_file_names($user) {
     natsort($names);
     return $names;
 }
-}
 
 // return a <select> for files in sandbox
 //
-if (!function_exists('sandbox_file_select')) {
-function sandbox_file_select($user, $select_name, $regexp = null, $allow_none = false) {
+function sandbox_file_select(
+    $user, $select_name, $regexp = null, $allow_none = false
+    ) {
     if ($regexp === null) {
         $regexp = $select_name;
     }
@@ -132,20 +139,21 @@ function sandbox_file_select($user, $select_name, $regexp = null, $allow_none = 
     $x .= "</select>\n";
     return $x;
 }
-}
 
-//check if a file is still being used by a unfinished batch
+// check if a file is still being used by a unfinished batch
 //
 function sandbox_file_in_use($user, $file){
-    $ufiles = array();
-
-    // batch status: 2(completed), 3(aborted)
-    // $pbatches = BoincBatch::enum("user_id = $user->id and state != BATCH_STATE_COMPLETE and state != BATCH_STATE_ABORTED");
-    $pbatches = BoincBatch::enum("user_id = $user->id and state != 2 and state != 3");
+    $pbatches = BoincBatch::enum(
+        sprintf("user_id = %d and state != %d and state != %d",
+            $user->id, BATCH_STATE_COMPLETE, BATCH_STATE_ABORTED
+        )
+    );
     if (!$pbatches) return false;
 
+    $ufiles = array();
     foreach ($pbatches as $batch){
         $wus = BoincWorkUnit::enum("batch = $batch->id limit 1" );
+        // ??? why limit 1?
         if ($wus == null){
             //echo " no workunit for this batch<br/>"; 
             continue;
@@ -168,7 +176,7 @@ function sandbox_file_in_use($user, $file){
     if (!$err){
         $f = sandbox_file_name($user, $md5);
         foreach($ufiles as $uf) {
-            if (strcmp($f,$uf) == 0){
+            if (strcmp($f, $uf) == 0){
                 return true;
             }
             
