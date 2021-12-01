@@ -287,7 +287,7 @@ function show_info() {
     page_tail();
 }
 
-if (!parse_bool($config, "autodock_submit_enabled")) {
+if (!parse_bool($config, "enable_autodock_submit")) {
     error_page("Autodock not enabled");
 }
 
