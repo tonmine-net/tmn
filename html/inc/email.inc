@@ -137,16 +137,25 @@ Note:  Your password will need to be recovered after clicking this link";
     return send_email($user, $subject, $body_new) && send_email($user, $subject, $body_old, null, $user->previous_email_addr);
 }
 
-// a valid email address is of the form A@B.C
-// where A, B, C are nonempty,
-// A and B don't contain @ or .,
-// and C doesn't contain @ and is at least 2 chars
+// check whether email addr is syntactically valid.
+// if using stopforumspam.com, check it too
 //
 function is_valid_email_addr($addr) {
-    if (defined("USE_STOPFORUMSPAM") && USE_STOPFORUMSPAM && array_key_exists('REMOTE_ADDR', $_SERVER)) {
-        $ip = $_SERVER['REMOTE_ADDR'];
-        // For obviously private IPs check just the email against SFS, otherwise check both IP and email
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+    if (defined("USE_STOPFORUMSPAM") && USE_STOPFORUMSPAM) {
+        // For obviously private IPs check just the email against SFS,
+        // otherwise check both IP and email
+        //
+        $use_ip = false;
+        if (array_key_exists('REMOTE_ADDR', $_SERVER)) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+            if (filter_var(
+                $ip, FILTER_VALIDATE_IP,
+                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+            )) {
+                $use_ip = true;
+            }
+        }
+        if ($use_ip) {
             $x = @file_get_contents("https://www.stopforumspam.com/api?ip=".$ip."&email=".$addr);
         } else {
             $x = @file_get_contents("https://www.stopforumspam.com/api?email=".$addr);
@@ -155,9 +164,7 @@ function is_valid_email_addr($addr) {
             return false;
         }
     }
-    $pattern = '/^([^@]+)@([^@\.]+)\.([^@]{2,})$/';
-    $match = preg_match($pattern, $addr);
-    return (bool) $match;
+    return filter_var($addr, FILTER_VALIDATE_EMAIL);
 }
 
 function send_confirm_delete_email($user) {
