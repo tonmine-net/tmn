@@ -47,6 +47,9 @@ if (!empty($_GET['post'])) {
     }
 
     $post = BoincPost::lookup_id($postId);
+    if (!$post) {
+        error_page('No such post.');
+    }
     $thread = BoincThread::lookup_id($post->thread);
     $forum = BoincForum::lookup_id($thread->forum);
 
