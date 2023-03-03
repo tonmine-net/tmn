@@ -703,10 +703,10 @@ void PROJECT::get_task_durs(double& not_started_dur, double& in_progress_dur) {
     }
 }
 
-const char* PROJECT::get_scheduler_url(int index, double r) {
+const char* PROJECT::get_scheduler_url(int url_index, double r) {
     int n = (int) scheduler_urls.size();
     int ir = (int)(r*n);
-    int i = (index + ir)%n;
+    int i = (url_index + ir)%n;
     return scheduler_urls[i].c_str();
 }
 

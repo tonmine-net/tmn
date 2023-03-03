@@ -403,13 +403,14 @@ int FILE_INFO::parse(XML_PARSER& xp) {
 #ifdef SIM
             delete pfxp;
             continue;
-#endif
+#else
             if (!retval) {
                 pers_file_xfer = pfxp;
             } else {
                 delete pfxp;
             }
             continue;
+#endif
         }
         if (xp.match_tag("file_xfer")) {
             while (!xp.get_tag()) {

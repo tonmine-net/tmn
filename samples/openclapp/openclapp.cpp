@@ -161,7 +161,7 @@ int main(int argc, char * argv[]) {
 
     print_to_file(&out,input,matrixSize);
 
-    for (int i=lastInversion+1;i<=NUM_ITERATIONS;++i) {
+    for (i=lastInversion+1;i<=NUM_ITERATIONS;++i) {
         //the invert function will trigger kernel calls.
         invert(input,output,matrixSize);
         printf("Finish inversion #%d\n",i);
@@ -225,7 +225,7 @@ int main(int argc, char * argv[]) {
     if (cpu_time) {
         printf("\nBurning up some CPU time ... \n");
         double start = dtime();
-        for (int i=0; ; i++) {
+        for (i=0; ; i++) {
             double e = dtime()-start;
             if (e > cpu_time) break;
             fd = .5 + .5*(e/cpu_time);

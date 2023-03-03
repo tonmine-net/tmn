@@ -338,7 +338,7 @@ bool TASK::poll(int& status) {
 
 void TASK::kill() {
 #ifdef _WIN32
-    TerminateProcess(pid_handle, -1);
+    TerminateProcess(pid_handle, 1);
 #else
     ::kill(pid, SIGKILL);
 #endif
@@ -408,7 +408,7 @@ double TASK::cpu_time() {
 }
 
 void send_status_message(
-    TASK& task, double frac_done, double checkpoint_cpu_time
+    TASK& task, double frac_done
 ) {
     double current_cpu_time = task.starting_cpu + task.cpu_time();
     boinc_report_app_status(
@@ -504,7 +504,7 @@ int boinc_run_rappture_app(const char* program, const char* cmdline) {
             break;
         }
         poll_boinc_messages(task);
-        send_status_message(task, fraction_done, checkpoint_cpu_time);
+        send_status_message(task, fraction_done);
         boinc_sleep(POLL_PERIOD);
     }
     return 0;

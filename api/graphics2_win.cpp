@@ -71,7 +71,7 @@ void boinc_close_window_and_quit(const char* p) {
     }
 }
 
-void SetupPixelFormat(HDC win_dc) {
+void SetupPixelFormat() {
     int nPixelFormat;
     char buf[256];
 
@@ -188,7 +188,7 @@ static void make_window(const char* title) {
             boinc_msg_prefix(buf, sizeof(buf)), GetLastError()
         );
     }
-    SetupPixelFormat(win_dc);
+    SetupPixelFormat();
 
     gl_dc = wglCreateContext(win_dc);
     if (!gl_dc) {

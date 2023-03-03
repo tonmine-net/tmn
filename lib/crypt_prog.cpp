@@ -82,7 +82,7 @@ void usage() {
 }
 
 unsigned int random_int() {
-    unsigned int n;
+    unsigned int n=0;
 #if defined(_WIN32)
 #if defined(__CYGWIN32__)
     HMODULE hLib=LoadLibrary((const char *)"ADVAPI32.DLL");
@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
         if (retval) die("read_public_key");
         strcpy((char*)buf2, "encryption test successful");
         in.data = buf2;
-        in.len = strlen((char*)in.data);
+        in.len = (unsigned int)strlen((char*)in.data);
         out.data = buf;
         encrypt_private(private_key, in, out);
         in = out;

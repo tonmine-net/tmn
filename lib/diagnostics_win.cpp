@@ -1271,10 +1271,10 @@ int diagnostics_dump_process_information() {
     fprintf(
         stderr, 
         "- I/O Operations Counters -\n"
-        "Read: %d, Write: %d, Other %d\n"
+        "Read: %lld, Write: %lld, Other %lld\n"
         "\n"
         "- I/O Transfers Counters -\n"
-        "Read: %d, Write: %d, Other %d\n"
+        "Read: %lld, Write: %lld, Other %lld\n"
         "\n",
         diagnostics_process.io_counters.ReadOperationCount,
         diagnostics_process.io_counters.WriteOperationCount,
@@ -1288,17 +1288,17 @@ int diagnostics_dump_process_information() {
     fprintf(
         stderr, 
         "- Paged Pool Usage -\n"
-        "QuotaPagedPoolUsage: %d, QuotaPeakPagedPoolUsage: %d\n"
-        "QuotaNonPagedPoolUsage: %d, QuotaPeakNonPagedPoolUsage: %d\n"
+        "QuotaPagedPoolUsage: %lld, QuotaPeakPagedPoolUsage: %lld\n"
+        "QuotaNonPagedPoolUsage: %lld, QuotaPeakNonPagedPoolUsage: %lld\n"
         "\n"
         "- Virtual Memory Usage -\n"
-        "VirtualSize: %d, PeakVirtualSize: %d\n"
+        "VirtualSize: %lld, PeakVirtualSize: %lld\n"
         "\n"
         "- Pagefile Usage -\n"
-        "PagefileUsage: %d, PeakPagefileUsage: %d\n"
+        "PagefileUsage: %lld, PeakPagefileUsage: %lld\n"
         "\n"
         "- Working Set Size -\n"
-        "WorkingSetSize: %d, PeakWorkingSetSize: %d, PageFaultCount: %d\n"
+        "WorkingSetSize: %lld, PeakWorkingSetSize: %lld, PageFaultCount: %lld\n"
         "\n",
         diagnostics_process.vm_counters.QuotaPagedPoolUsage,
         diagnostics_process.vm_counters.QuotaPeakPagedPoolUsage,
@@ -1420,13 +1420,13 @@ int diagnostics_dump_exception_record(PEXCEPTION_POINTERS pExPtrs) {
                 switch(pExPtrs->ExceptionRecord->ExceptionInformation[0]) {
                 case 0: // read attempt
                     snprintf(substatus, sizeof(substatus),
-                        "read attempt to address 0x%8.8X",
+                        "read attempt to address 0x%8.8llX",
                         pExPtrs->ExceptionRecord->ExceptionInformation[1]
                     );
                     break;
                 case 1: // write attempt
                     snprintf(substatus, sizeof(substatus),
-                        "write attempt to address 0x%8.8X",
+                        "write attempt to address 0x%8.8llX",
                         pExPtrs->ExceptionRecord->ExceptionInformation[1]
                     );
                     break;

@@ -114,7 +114,7 @@ bool CScreensaver::is_same_task(RESULT* taska, RESULT* taskb) {
 }
 
 int CScreensaver::count_active_graphic_apps(RESULTS& res, RESULT* exclude) {
-    int i = 0;
+    size_t i = 0;
     unsigned int graphics_app_count = 0;
 
     // Count the number of active graphics-capable apps excluding the specified result.
@@ -320,7 +320,6 @@ int CScreensaver::launch_screensaver(RESULT* rp, GFXAPP_ID& graphics_application
 //
 int CScreensaver::terminate_v6_screensaver(GFXAPP_ID& graphics_application, RESULT* rp) {
     int retval = 0;
-    int i;
 
 #ifdef __APPLE__
     pid_t thePID;
@@ -356,7 +355,7 @@ int CScreensaver::terminate_v6_screensaver(GFXAPP_ID& graphics_application, RESU
 
     launchedGfxApp("", 0, -1);
 
-    for (i=0; i<200; i++) {
+    for (int i=0; i<200; i++) {
         boinc_sleep(0.01);      // Wait 2 seconds max
         if (HasProcessExited(graphics_application, ignore)) {
             break;
@@ -366,6 +365,7 @@ int CScreensaver::terminate_v6_screensaver(GFXAPP_ID& graphics_application, RESU
 #endif
 
 #ifdef _WIN32
+    UNREFERENCED_PARAMETER(rp);
         HWND hBOINCGraphicsWindow = FindWindow(BOINC_WINDOW_CLASS_NAME, NULL);
         if (hBOINCGraphicsWindow) {
             CloseWindow(hBOINCGraphicsWindow);

@@ -120,14 +120,14 @@ void boinc_catch_signal_invalid_parameter(
 ) {
 	fprintf(
 		stderr,
-        "ERROR: Invalid parameter detected in function %s. File: %s Line: %d\n",
+        "ERROR: Invalid parameter detected in function %S. File: %S Line: %d\n",
 		function,
 		file,
 		line
 	);
 	fprintf(
 		stderr,
-		"ERROR: Expression: %s\n",
+		"ERROR: Expression: %S\n",
 		expression
 	);
 
