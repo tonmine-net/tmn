@@ -56,15 +56,12 @@ static int create_md5_file(const char* file_path, const char* md5_file_path, boo
 
 int stage_file(
     char* file_path,
-    SCHED_CONFIG& config,
     bool gzip,
     bool copy,
     bool verbose
 ) {    
     char dl_hier_path[MAXPATHLEN], gz_path[MAXPATHLEN];
-    char md5_file_path[MAXPATHLEN], md5_file_hash[MD5_LEN];
     char* file_name;
-    double nbytes;
     int retval;
 
     if (!boinc_file_exists(file_path)) {
@@ -173,12 +170,11 @@ void usage(int exit_code) {
 
 void run_stage_file(
     char* file_path,
-    SCHED_CONFIG& config,
     bool gzip,
     bool copy,
     bool verbose
 ) {
-    int retval = stage_file(file_path, config, gzip, copy, verbose); 
+    int retval = stage_file(file_path, gzip, copy, verbose); 
     if (retval) {
         fprintf(stderr, "stage_file failed for file %s: %s\n", file_path, boincerror(retval));
         exit(1);
@@ -235,10 +231,10 @@ int main(int argc, char** argv) {
             if (!is_file(file_path)) {
                 continue;
             }
-            run_stage_file(file_path, config, gzip, copy, verbose);
+            run_stage_file(file_path, gzip, copy, verbose);
         }
     } else  {
-        run_stage_file(path, config, gzip, copy, verbose);
+        run_stage_file(path, gzip, copy, verbose);
     }
 
     return 0;

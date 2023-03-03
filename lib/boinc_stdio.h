@@ -76,7 +76,7 @@ namespace boinc {
 #ifdef _USING_FCGI_
         return FCGI_fileno(f);
 #else
-        return ::_fileno(f);
+        return ::fileno(f);
 #endif
     }
 
