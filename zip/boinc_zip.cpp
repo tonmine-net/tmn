@@ -205,13 +205,13 @@ bool boinc_filelist(
     g_ucSort = ucSort;  // set the global sort type right off the bat
     string strFile;
     // at most three |'s may be passed in pattern match
-    int iPos[3], iFnd, iCtr, i, lastPos;  
+    int iPos[3], iFnd=0, iCtr, i, lastPos;  
     string strFullPath;
     char strPart[3][32];
     string spattern = pattern;
     string strDir = directory;
     string strUserDir = directory;
-    int iLen = strUserDir.size();
+    int iLen = (int)strUserDir.size();
 
     if (!pList) return false;
 

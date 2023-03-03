@@ -467,8 +467,8 @@ extern int main(int, char**);
 void boinc_set_windows_icon(const char* icon16, const char* icon48) {
     LONGLONG ic;
     HWND hWnd = FindWindow("BOINC_app",NULL);
-
-    if (ic = (LONGLONG)LoadIcon(instance, icon48)) {
+    ic = (LONGLONG)LoadIcon(instance, icon48);
+    if (ic) {
 #ifdef _WIN64
         SetClassLongPtr(hWnd, GCLP_HICON, (LONG_PTR)ic);
 #else
