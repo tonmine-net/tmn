@@ -1,8 +1,10 @@
+#include <string>
+#include <ios>
+
 #include "gtest/gtest.h"
 #include "common_defs.h"
 #include "url.h"
-#include <string>
-#include <ios>
+#include "str_replace.h"
 
 using namespace std;
 
